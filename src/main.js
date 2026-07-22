@@ -8,9 +8,6 @@ import Aura from '@primevue/themes/aura'
 
 const app = createApp(App)
 
-console.log(import.meta.env)
-console.log(import.meta.env.VITE_API_URL)
-
 app.use(createPinia())
 app.use(router)
 

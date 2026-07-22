@@ -8,11 +8,12 @@ export const useAuthorization = defineStore('authorization', () => {
       axios
         .post('/users/auth', data)
         .then((response) => {
-          localStorage.setItem('accessToken', response.data.accessToken)
-          localStorage.setItem('refreshToken', response.data.refreshToken)
+          console.log('RESPONSE DATA:', response.data)
+          localStorage.setItem('accessToken', response.data.token)
           resolve()
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log('LOGIN ERROR:', error)
           reject()
         })
     })

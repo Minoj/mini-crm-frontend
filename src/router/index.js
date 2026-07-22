@@ -21,7 +21,15 @@ const routes = [
   {
     path: '/',
     component: () => import('@/views/HomeView.vue'),
-    //beforeEnter: ifAuthorized,
+    beforeEnter: ifAuthorized,
+    meta: {
+      layout: defineAsyncComponent(() => import('@/layouts/DefaultLayout.vue')),
+    },
+  },
+  {
+    path: '/clients',
+    component: () => import('@/views/ClientsView.vue'),
+    beforeEnter: ifAuthorized,
     meta: {
       layout: defineAsyncComponent(() => import('@/layouts/DefaultLayout.vue')),
     },
@@ -29,7 +37,7 @@ const routes = [
   {
     path: '/login',
     component: () => import('@/pages/LoginPage.vue'),
-    //beforeEnter: ifNotAuthorized,
+    beforeEnter: ifNotAuthorized,
     meta: {
       layout: defineAsyncComponent(() => import('@/layouts/BlankLayout.vue')),
     },
@@ -37,7 +45,7 @@ const routes = [
   {
     path: '/register',
     component: () => import('@/pages/RegisterPage.vue'),
-    //beforeEnter: ifNotAuthorized,
+    beforeEnter: ifNotAuthorized,
     meta: {
       layout: defineAsyncComponent(() => import('@/layouts/BlankLayout.vue')),
     },
