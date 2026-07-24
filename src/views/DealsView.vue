@@ -36,12 +36,6 @@ const form = reactive({
   amount: '',
 })
 
-onMounted(() => {
-  dealStore.dealsGet()
-  console.log(dealStore.dealsGet())
-  clientStore.clientsGet()
-})
-
 function openCreateDialog() {
   form.clientId = ''
   form.title = ''
@@ -80,11 +74,18 @@ function statusSeverity(status) {
 async function handleStatusChange(deal, newStatus) {
   try {
     await dealStore.updateDealStatus(deal.id, newStatus)
+    console.log(dealStore.updateDealStatus(deal.id, newStatus))
     await dealStore.dealsGet()
   } catch (error) {
     console.log('UPDATE STATUS ERROR:', error)
   }
 }
+
+onMounted(() => {
+  dealStore.dealsGet()
+  console.log(dealStore.dealsGet())
+  clientStore.clientsGet()
+})
 
 function formatAmount(amount) {
   return parseFloat(amount).toLocaleString() + " so'm"
