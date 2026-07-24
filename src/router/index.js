@@ -35,6 +35,14 @@ const routes = [
     },
   },
   {
+    path: '/deals',
+    component: () => import('@/views/DealsView.vue'),
+    beforeEnter: ifAuthorized,
+    meta: {
+      layout: defineAsyncComponent(() => import('@/layouts/DefaultLayout.vue')),
+    },
+  },
+  {
     path: '/login',
     component: () => import('@/pages/LoginPage.vue'),
     beforeEnter: ifNotAuthorized,
