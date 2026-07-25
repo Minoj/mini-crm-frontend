@@ -1,10 +1,12 @@
 <script setup>
 import { useRouter } from 'vue-router'
+import { useAuthorization } from '@/stores/auth.js'
 
+const authStore = useAuthorization()
 const router = useRouter()
 function logOut() {
-  localStorage.removeItem('accessToken')
-  router.push('/login')
+  authStore.logout()
+  router.replace('/login')
 }
 </script>
 

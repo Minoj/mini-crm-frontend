@@ -1,38 +1,35 @@
-# mini-crm-frontend
+# Mini CRM — Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 asosidagi CRM interfeysi — mijozlar va bitimlarni boshqarish uchun.
 
-## Recommended IDE Setup
+## Texnologiyalar
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Vue 3** (Composition API, `<script setup>`)
+- **Pinia** — state management
+- **Vue Router** — navigatsiya va himoyalangan sahifalar (Navigation Guards)
+- **Axios** — backend API bilan aloqa (JWT token interceptor bilan)
+- **PrimeVue** — UI komponentlar kutubxonasi (DataTable, Dialog, Toast va h.k.)
 
-## Recommended Browser Setup
+## Funksionallik
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Ro'yxatdan o'tish / kirish (JWT)
+- Mijozlar — ro'yxat, qo'shish, o'chirish, batafsil sahifa (unga tegishli bitimlar bilan)
+- Bitimlar — ro'yxat, qo'shish, status boshqaruvi, o'chirish
+- Rolga asoslangan ko'rinish — har bir foydalanuvchi faqat o'z ma'lumotlarini ko'radi
+- Responsive dizayn (mobil uchun ochiladigan sidebar)
 
-## Customize configuration
+## Ishga tushirish
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+\`\`\`bash
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
-```
+\`\`\`
 
-### Compile and Minify for Production
+`.env` faylida backend manzilini ko'rsating:
+\`\`\`
+VITE_API_URL=http://localhost:8000
+\`\`\`
 
-```sh
-npm run build
-```
+## Loyiha haqida
+
+Bu loyiha Vue 3 va PrimeVue'ni o'rganish maqsadida, Claude (Anthropic) yordamida qurilgan — AI dizayn (template/CSS) va texnik yo'nalish bergan, JavaScript logikasi (state, API integratsiyasi) mustaqil yozilgan.

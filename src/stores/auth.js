@@ -1,15 +1,20 @@
 import { defineStore } from 'pinia'
 import axios from '@/api/axios.js'
 import router from '@/router/index.js'
+import { ref } from 'vue'
+import { jwtDecode } from 'jwt-decode'
 
 export const useAuthorization = defineStore('authorization', () => {
+  const user = ref(null)
   function userAuth(data) {
     return new Promise((resolve, reject) => {
       axios
         .post('/users/auth', data)
         .then((response) => {
-          console.log('RESPONSE DATA:', response.data)
+          const token = response.data.token
+          console.log(jwtDecode(response.data.token))
           localStorage.setItem('accessToken', response.data.token)
+          user.value = jwtDecode(token)
           resolve()
         })
         .catch((error) => {
@@ -33,11 +38,19 @@ export const useAuthorization = defineStore('authorization', () => {
     })
   }
 
-  function userLogOut() {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    router.push('/login')
+  function loadUser() {
+    const token  = localStorage.getItem('accessToken')
+
+    if (token){
+      user.value = jwtDecode(token)
+    }
   }
 
-  return { userAuth, userRegister, userLogOut }
+  function logout() {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    user.value = null
+  }
+
+  return { userAuth, userRegister, loadUser, logout }
 })

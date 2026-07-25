@@ -7,15 +7,22 @@ import Button from 'primevue/button'
 import Select from 'primevue/select'
 import InputNumber from 'primevue/inputnumber'
 import Tag from 'primevue/tag'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
 import { useClients } from '@/stores/getClients.js'
 import { onMounted, reactive, ref } from 'vue'
 import { useDeals } from '@/stores/getDeals.js'
+import { useToast } from 'primevue/usetoast'
 
 const clientStore = useClients()
 const dealStore = useDeals()
+const toast = useToast()
+
 const showDialog = ref(false)
 const submitting = ref(false)
 const loading = ref(false)
+const confirm = useConfirm()
+const submitted = ref(false)
 
 function extractClientName(clientIri) {
   const id = clientIri.split('/').pop()
@@ -33,23 +40,43 @@ const statusOptions = ref([
 const form = reactive({
   clientId: '',
   title: '',
-  amount: '',
+  amount: null,
 })
 
 function openCreateDialog() {
   form.clientId = ''
   form.title = ''
-  form.amount = ''
+  form.amount = null
+  submitted.value = false
   showDialog.value = true
 }
 
 async function handleCreateDeal() {
+  submitted.value = true
+
+  if (!form.clientId || !form.title || !form.amount) {
+    return
+  }
+
   submitting.value = true
+
   try {
     await dealStore.createDeal(form)
     await dealStore.dealsGet() // ro'yxatni yangilash
+    toast.add({
+      severity: 'success',
+      summary: 'Muvaffaqiyatli',
+      detail: 'Bitim yaratildi',
+      life: 3000,
+    })
     showDialog.value = false
   } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'Client yaratilmadi',
+      life: 3000,
+    })
     console.log('CREATE DEAL ERROR:', error)
   } finally {
     submitting.value = false
@@ -79,6 +106,37 @@ async function handleStatusChange(deal, newStatus) {
   } catch (error) {
     console.log('UPDATE STATUS ERROR:', error)
   }
+}
+
+async function confirmDelete(deal) {
+  confirm.require({
+    group: 'templating',
+    message: `"${deal.title}" ni o'chirmoqchimisiz?`,
+    header: 'Tasdiqlash',
+    icon: 'pi pi-exclamation-triangle',
+    accept: async () => {
+      try {
+        await dealStore.deleteDeal(deal.id)
+        await dealStore.dealsGet()
+
+        toast.add({
+          severity: 'success',
+          summary: 'Muvaffaqiyatli',
+          detail: "Bitim o'chirildi",
+          life: 3000,
+        })
+      } catch (error) {
+        toast.add({
+          severity: 'error',
+          summary: 'Xatolik',
+          detail: "Bitimni o'chirib bo'lmadi",
+          life: 3000,
+        })
+
+        console.log(error)
+      }
+    },
+  })
 }
 
 onMounted(() => {
@@ -145,6 +203,14 @@ function formatAmount(amount) {
         </template>
       </Column>
 
+      <Column header="Deal o'chirish">
+        <template #body="{ data }">
+          <Button icon="pi pi-trash" severity="danger" text @click="confirmDelete(data)">
+            Uchirish
+          </Button>
+        </template>
+      </Column>
+
       <template #empty> Hozircha bitimlar mavjud emas. </template>
     </DataTable>
 
@@ -161,14 +227,25 @@ function formatAmount(amount) {
             optionLabel="name"
             optionValue="id"
             placeholder="Mijozni tanlang"
-            required
+            :invalid="submitted && !form.clientId"
             class="w-full"
           />
+          <small v-if="submitted && !form.clientId" class="error-text">
+            Mijoz tanlanishi shart
+          </small>
         </div>
 
         <div class="field">
           <label for="title">Nomi</label>
-          <InputText id="title" v-model="form.title" required class="w-full" />
+          <InputText
+            id="title"
+            v-model="form.title"
+            class="w-full"
+            :invalid="submitted && !form.title"
+          />
+          <small v-if="submitted && !form.title" class="error-text">
+            Title kiritilishi shart
+          </small>
         </div>
 
         <div class="field">
@@ -177,10 +254,14 @@ function formatAmount(amount) {
             id="amount"
             v-model="form.amount"
             mode="decimal"
-            :minFractionDigits="2"
-            required
+            :minFractionDigits="0"
+            :maxFractionDigits="2"
+            :invalid="submitted && !form.amount"
             class="w-full"
           />
+          <small v-if="submitted && !form.amount" class="error-text">
+            Title kiritilishi shart
+          </small>
         </div>
 
         <div class="dialog-actions">
@@ -195,10 +276,25 @@ function formatAmount(amount) {
         </div>
       </form>
     </Dialog>
+
+    <ConfirmDialog group="templating">
+      <template #message="slotProps">
+        <div class="flex flex-column align-items-center w-full gap-3">
+          <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
+          <p>{{ slotProps.message.message }}</p>
+        </div>
+      </template>
+    </ConfirmDialog>
   </div>
 </template>
 
 <style scoped>
+.error-text {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
 .deals-page {
   max-width: 1200px;
 }

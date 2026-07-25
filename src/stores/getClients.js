@@ -34,7 +34,7 @@ export const useClients = defineStore('client', () => {
   function clientGetById(id) {
     return new Promise((resolve, reject) => {
       axios
-        .get('/client/' + id)
+        .get('/clients/' + id)
         .then((response) => {
           state.selectedClient = response.data
           resolve(response.data)
@@ -56,8 +56,24 @@ export const useClients = defineStore('client', () => {
         .catch((error) => {
           reject(error)
         })
+        .finally(() => {
+          state.loading = false
+        })
     })
   }
 
-  return { clientsGet, clientGetById, createClient, state }
+  function deleteClient(id) {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete('/clients/'+ id)
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
+  return { clientsGet, clientGetById, createClient, deleteClient, state }
 })

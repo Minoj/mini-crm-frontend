@@ -53,6 +53,25 @@ export const useDeals = defineStore('deals', () => {
         .catch((error) => {
           reject(error)
         })
+        .finally(() => {
+          state.loading = false
+        })
+    })
+  }
+
+  function deleteDeal(id) {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete('/deals/' + id)
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+        .finally(() => {
+          state.loading = false
+        })
     })
   }
 
@@ -67,8 +86,11 @@ export const useDeals = defineStore('deals', () => {
           console.log('PATCH ERROR:', error)
           reject(error)
         })
+        .finally(() => {
+          state.loading = false
+        })
     })
   }
 
-  return { dealsGet, dealGetById, createDeal, updateDealStatus, state }
+  return { dealsGet, dealGetById, createDeal, updateDealStatus, deleteDeal, state }
 })
