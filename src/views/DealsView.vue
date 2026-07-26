@@ -249,6 +249,7 @@ function formatAmount(amount) {
             mode="decimal"
             :minFractionDigits="0"
             :maxFractionDigits="2"
+            :max="99999999.99"
             :invalid="submitted && !form.amount"
             class="w-full"
           />
