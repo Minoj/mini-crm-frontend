@@ -304,4 +304,16 @@ function formatDate(dateString) {
   gap: 0.75rem;
   margin-top: 0.5rem;
 }
+
+:deep(.client-dialog) {
+  margin: 1rem;
+  max-width: calc(100vw - 2rem);
+}
+
+:deep(.p-dialog) {
+  margin: 1rem; /* barcha tomondan minimal masofa, ekranning eng chetiga yopishmasin */
+  max-width: calc(
+    100vw - 2rem
+  ); /* Dialog kengligi ekrandan katta bo'lmasin (1rem chap + 1rem o'ng) */
+}
 </style>

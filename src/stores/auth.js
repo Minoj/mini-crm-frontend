@@ -1,26 +1,21 @@
 import { defineStore } from 'pinia'
 import axios from '@/api/axios.js'
-import router from '@/router/index.js'
 import { ref } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 
 export const useAuthorization = defineStore('authorization', () => {
   const user = ref(null)
+
   function userAuth(data) {
     return new Promise((resolve, reject) => {
       axios
         .post('/users/auth', data)
         .then((response) => {
-          const token = response.data.token
-          console.log(jwtDecode(response.data.token))
           localStorage.setItem('accessToken', response.data.token)
-          user.value = jwtDecode(token)
-          resolve()
+          return fetchCurrentUser()
         })
-        .catch((error) => {
-          console.log('LOGIN ERROR:', error)
-          reject()
-        })
+        .then(() => resolve())
+        .catch(() => reject())
     })
   }
 
@@ -29,7 +24,6 @@ export const useAuthorization = defineStore('authorization', () => {
       axios
         .post('/users/my', data)
         .then((response) => {
-          console.log("User yaratildi")
           resolve()
         })
         .catch(() => {
@@ -39,11 +33,23 @@ export const useAuthorization = defineStore('authorization', () => {
   }
 
   function loadUser() {
-    const token  = localStorage.getItem('accessToken')
+    const token = localStorage.getItem('accessToken')
 
-    if (token){
+    if (token) {
       user.value = jwtDecode(token)
     }
+  }
+
+  function fetchCurrentUser() {
+    return new Promise((resolve, reject) => {
+      axios
+        .get('/users/me')
+        .then((response) => {
+          localStorage.setItem('userInfo', JSON.stringify(response.data))
+          resolve(response.data)
+        })
+        .catch((error) => reject(error))
+    })
   }
 
   function logout() {
@@ -52,5 +58,5 @@ export const useAuthorization = defineStore('authorization', () => {
     user.value = null
   }
 
-  return { userAuth, userRegister, loadUser, logout }
+  return { userAuth, userRegister, loadUser, logout}
 })

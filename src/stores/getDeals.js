@@ -83,7 +83,6 @@ export const useDeals = defineStore('deals', () => {
           resolve(response.data)
         })
         .catch((error) => {
-          console.log('PATCH ERROR:', error)
           reject(error)
         })
         .finally(() => {

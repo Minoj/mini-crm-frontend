@@ -101,10 +101,8 @@ function statusSeverity(status) {
 async function handleStatusChange(deal, newStatus) {
   try {
     await dealStore.updateDealStatus(deal.id, newStatus)
-    console.log(dealStore.updateDealStatus(deal.id, newStatus))
     await dealStore.dealsGet()
   } catch (error) {
-    console.log('UPDATE STATUS ERROR:', error)
   }
 }
 
@@ -132,8 +130,6 @@ async function confirmDelete(deal) {
           detail: "Bitimni o'chirib bo'lmadi",
           life: 3000,
         })
-
-        console.log(error)
       }
     },
   })
@@ -141,7 +137,6 @@ async function confirmDelete(deal) {
 
 onMounted(() => {
   dealStore.dealsGet()
-  console.log(dealStore.dealsGet())
   clientStore.clientsGet()
 })
 
@@ -203,11 +198,9 @@ function formatAmount(amount) {
         </template>
       </Column>
 
-      <Column header="Deal o'chirish">
+      <Column header="Bitim o'chirish">
         <template #body="{ data }">
-          <Button icon="pi pi-trash" severity="danger" text @click="confirmDelete(data)">
-            Uchirish
-          </Button>
+          <Button icon="pi pi-trash" severity="danger" text @click="confirmDelete(data)" />
         </template>
       </Column>
 
@@ -350,5 +343,17 @@ function formatAmount(amount) {
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 0.5rem;
+}
+
+:deep(.p-dialog) {
+  margin: 1rem; /* barcha tomondan minimal masofa, ekranning eng chetiga yopishmasin */
+  max-width: calc(
+    100vw - 2rem
+  ); /* Dialog kengligi ekrandan katta bo'lmasin (1rem chap + 1rem o'ng) */
+}
+
+:deep(.deal-dialog) {
+  margin: 1rem;
+  max-width: calc(100vw - 2rem);
 }
 </style>
