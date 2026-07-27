@@ -77,7 +77,6 @@ async function handleCreateDeal() {
       detail: 'Client yaratilmadi',
       life: 3000,
     })
-    console.log('CREATE DEAL ERROR:', error)
   } finally {
     submitting.value = false
   }

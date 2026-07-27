@@ -31,7 +31,6 @@ async function handleRoleChange(user, newRole) {
     })
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Rol yangilanmadi', life: 3000 })
-    console.log('ROLE CHANGE ERROR:', error)
   }
 }
 </script>

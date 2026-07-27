@@ -25,10 +25,6 @@ async function register() {
       email: email.value,
       password: password.value,
     })
-    console.log({
-      email: email.value,
-      password: password.value,
-    })
     await registerStore.userAuth({
       email: email.value,
       password: password.value,

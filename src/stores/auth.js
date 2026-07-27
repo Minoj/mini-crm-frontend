@@ -12,6 +12,7 @@ export const useAuthorization = defineStore('authorization', () => {
         .post('/users/auth', data)
         .then((response) => {
           localStorage.setItem('accessToken', response.data.token)
+          loadUser()
           return fetchCurrentUser()
         })
         .then(() => resolve())
@@ -58,5 +59,5 @@ export const useAuthorization = defineStore('authorization', () => {
     user.value = null
   }
 
-  return { userAuth, userRegister, loadUser, logout}
+  return { userAuth, userRegister, loadUser, logout, user}
 })

@@ -30,6 +30,7 @@ const form = reactive({
   company: '',
 })
 onMounted(() => {
+  authStore.loadUser()
   clientStore.clientsGet()
 })
 
@@ -72,7 +73,6 @@ async function handleCreateClient() {
       detail: 'Client yaratilmadi',
       life: 3000,
     })
-    console.log('CREATE CLIENT ERROR:', error)
   } finally {
     submitting.value = false
   }
@@ -84,9 +84,26 @@ async function confirmDelete(client) {
     message: `"${client.name}" ni o'chirmoqchimisiz?`,
     header: 'Tasdiqlash',
     icon: 'pi pi-exclamation-triangle',
+
     accept: async () => {
-      await clientStore.deleteClient(client.id)
-      await clientStore.clientsGet()
+      try {
+        await clientStore.deleteClient(client.id)
+        await clientStore.clientsGet()
+
+        toast.add({
+          severity: 'success',
+          summary: 'Muvaffaqiyatli',
+          detail: "Client o'chirildi",
+          life: 3000,
+        })
+      } catch (error) {
+        toast.add({
+          severity: 'error',
+          summary: 'Xatolik',
+          detail: "Client o'chirilmadi",
+          life: 3000,
+        })
+      }
     },
   })
 }
@@ -142,11 +159,9 @@ function formatDate(dateString) {
         </template>
       </Column>
 
-      <Column v-if="canDelete" header="Deal o'chirish">
+      <Column v-if="canDelete" header="Mijozni o'chirish">
         <template #body="{ data }">
-          <Button icon="pi pi-trash" severity="danger" text @click="confirmDelete(data)">
-            Uchirish
-          </Button>
+          <Button icon="pi pi-trash" severity="danger" text @click="confirmDelete(data)" />
         </template>
       </Column>
 
